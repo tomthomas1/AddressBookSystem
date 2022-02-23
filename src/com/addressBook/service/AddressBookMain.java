@@ -17,7 +17,7 @@ public class AddressBookMain {
 		addnew.addContact();
 
 		while (true) {
-			System.out.println("Enter your choice:\n 1. Add Contact\n 2. Edit Contact \n 3. Display Contacts  \n 4. Exit ");
+			System.out.println("Enter your choice:\n 1. Add Contact\n 2. Edit Contact \n 3. Display Contacts  \n 4. Delete Contact\n 5. Exit ");
 			int choice= sc.nextInt();
 			switch (choice) {
 			case 1:
@@ -35,8 +35,13 @@ public class AddressBookMain {
 				System.out.println("The contacts in the Address Book are ");
 				addnew.displayContact();
 				break;
+				
+			case 4: 
+				System.out.println("Enter contact detais to delete: ");
+				addnew.deleteContact();
+				break;
 
-			case 4:
+			case 5:
 				System.out.println("Exited : ");
 				sc.close();
 				return;

@@ -147,8 +147,18 @@ public class AddressBookServices {
 
 	}
 	
-	public void displayContact() {
+	public void displayContact() {                                                       
 			System.out.println(contacts);
+	}
+	
+	public void deleteContact() {                                                                       //to delete contact
+		ContactPerson contact = findContact();
+		if (contact == null) {
+			System.out.println("No contact found with the given name");
+			return;
+		}
+		contacts.remove(contact);                                                                        // remove method to delete the contact
+		System.out.println("The contact has been deleted from the Address Book");
 	}
 
 }
