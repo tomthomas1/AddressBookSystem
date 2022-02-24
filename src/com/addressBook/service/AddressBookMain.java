@@ -9,46 +9,47 @@ public class AddressBookMain {
 	public static void main(String[] args) {
 
 		System.out.println("---------Address Book---------");
-		Scanner sc=new Scanner(System.in);
-		
-		List<ContactPerson> contacts = new ArrayList<ContactPerson>();                //ArrayList
-		AddressBookServices addnew = new AddressBookServices();                       //object to access the class methods
+		Scanner sc = new Scanner(System.in);
 
-		addnew.addContact();
+		List<ContactPerson> contacts = new ArrayList<ContactPerson>(); // ArrayList
+		AddressBookServices addnew = new AddressBookServices();
+		MultipleAddressBook obj = new MultipleAddressBook(); // object to access the class methods
+
 
 		while (true) {
-			System.out.println("Enter your choice:\n 1. Add Contact\n 2. Edit Contact \n 3. Display Contacts  \n 4. Delete Contact\n 5. Exit ");
-			int choice= sc.nextInt();
+			System.out.println("Enter \n 1. To add the new AddressBook\n 2. To add contact in AddressBook\n "
+					+ "3. To edit the contact in AddressBook\n 4. To delete the contact in AddressBook\n 5. To delete the AddressBook\n "
+					+ "6. To Print the AddressBook\n 7. To Print the contacts in AddressBook\n 0. To exit");
+			Scanner scanner = new Scanner(System.in);
+			int choice = scanner.nextInt();
 			switch (choice) {
 			case 1:
-				System.out.println("Enter the contact detais to add in the Address Book: ");
-				addnew.addContact();
-				
+				obj.addAddressBook();
 				break;
 			case 2:
-				System.out.println("Enter the detais to edit: ");
-				addnew.editContact();
-				
+				obj.addContact();
 				break;
-				
 			case 3:
-				System.out.println("The contacts in the Address Book are ");
-				addnew.displayContact();
+				obj.editContactInBook();
 				break;
-				
-			case 4: 
-				System.out.println("Enter contact detais to delete: ");
-				addnew.deleteContact();
+			case 4:
+				obj.deleteContactInBook();
 				break;
-
 			case 5:
-				System.out.println("Exited : ");
-				sc.close();
-				return;
-				
+				obj.deleteAddressBook();
+				break;
+			case 6:
+				obj.printBook();
+				break;
+			case 7:
+				obj.printContactsInBook();
+				break;
+			case 0:
+				System.exit(0);
+				break;
+			default:
+				System.out.println("Enter the wrong input");
 			}
 		}
-		
-	}		
-
+	}
 }
