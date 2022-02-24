@@ -11,8 +11,15 @@ public class AddressBookServices {
 
 	
 	public void addContact() {                                                            //taking input from console to add user
-
-		Scanner scan = new Scanner(System.in);
+		System.out.println("Enter the number of contacts you want to enter");
+        int number = sc.nextInt();
+        for (int i = 0; i < number; i++) {
+            System.out.println("Enter the contact details of person ");
+            addPerson();
+        }
+    }
+    public void addPerson() {
+    	Scanner scan = new Scanner(System.in);
 		System.out.print(" Please enter the first name: ");
 		String firstName = scan.next();
 		
