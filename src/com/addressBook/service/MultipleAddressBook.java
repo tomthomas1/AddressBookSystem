@@ -3,15 +3,35 @@ package com.addressBook.service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
+/**
+ * This class have the implementation for the multiple address book.
+ * We have created the methods for the address book manipulations.
+ * We have used a HashMap to store multiple addressBook
+ * [1] The method addAddressBook will add the address book key to the Map.
+ * [2] The method addContact will add the contact to the addressBook
+ * [3] The method editContact will edit the contacts in the address book
+ * [4] Method to delete the addressBook
+ * [5] The method deleteContactInBook to delete the specific contact in the book
+ * [6] This method will print the AddressBook i.e keys in the Map
+ * @author Tom
+ *
+ */
 public class MultipleAddressBook {
-	Map<String, AddressBookServices> addressBookMap = new HashMap<>();              // use of hashMap to save the addressBook
+	/**
+	 * We have created a HashMap and taken the key String as addressBook name and the value as AddressBookServices for contacts.
+	 */
+	Map<String, AddressBookServices> addressBookMap = new HashMap<>();              
 
-	public void addAddressBook() {                                                  // to add address book
+	/**
+	 * [1] The method addAddressBook will add the address book key to the Map.
+	 * 1. We are taking a addressBook name from the console and using the .containsKep method to check if the book is already present
+	 * 2. Else we will use the put method to add the key and value.
+	 */
+	public void addAddressBook() {                                                  
 		System.out.println("Enter Name of new Address Book: ");
 		Scanner scanner = new Scanner(System.in);
 		String bookName = scanner.next();
-		if (addressBookMap.containsKey(bookName)) {                                //we use containsKey to check if the book name exists
+		if (addressBookMap.containsKey(bookName)) {                               
 			System.out.println("Address book with this name exists, Enter new name.");
 			addAddressBook();
 		} else {
@@ -21,19 +41,31 @@ public class MultipleAddressBook {
 		}
 	}
 
-	public void addContact() {                                                     // to add contact in Address book
+	/**
+	 * [2] The method addContact will add the contact to the addressBook
+	 * 1. First we will ask the AddressBook name to add the contact to.
+	 * 2. Then we will get the key from the HashMap
+	 * 3. We are then just calling the add contact method and adding the contact to our ArrayList.
+	 */
+	public void addContact() {                                                     
 		System.out.println("Enter the name of Address book to add the contact.");
 		Scanner scanner = new Scanner(System.in);
 		String newContact = scanner.nextLine();
-		AddressBookServices addressBook = addressBookMap.get(newContact);           // to check if the addressbook is present
+		AddressBookServices addressBook = addressBookMap.get(newContact); 
 		if (addressBook == null) {
 			System.out.println("No book found");
 
 		} else {
-			addressBookMap.get(newContact).addContact();                         // if present then add it to hashMap
+			addressBookMap.get(newContact).addContact();                         
 		}
 	}
 
+	/**
+	 * [3] The method editContact will edit the contacts in the address book
+	 * 1. First we will ask the AddressBook name to edit the contact to.
+	 * 2. Then we will get the key from the HashMap
+	 * 3. We are then just calling the edit contact method
+	 */
 	public void editContactInBook() {
 		System.out.println("Enter Name of Address Book you want to edit: ");
 		Scanner scanner = new Scanner(System.in);
@@ -46,6 +78,11 @@ public class MultipleAddressBook {
 		}
 	}
 
+	/**
+	 * [4] - Method to delete the addressBook
+	 * 1. In this we will delete the specific key and its contacts.
+	 * 2. We are using the remove method to delete the key & value form the map 
+	 */
 	public void deleteAddressBook() {
 		System.out.println("Enter Name of Address Book you want to delete: ");
 		Scanner scanner = new Scanner(System.in);
@@ -58,29 +95,44 @@ public class MultipleAddressBook {
 		}
 	}
 
+	/**
+	 * [5] The method deleteContactInBook to delete the specific contact in the book
+	 *  1. This method will only delete the value and not the key.
+	 *  2. We will check if the key is present and then we will call the deleteContact method and delete the specific contact.
+	 * 
+	 */
 	public void deleteContactInBook() {
 		System.out.println("Enter Name of Address Book you want to delete the contacts in it: ");
 		Scanner scanner = new Scanner(System.in);
 		String bookName = scanner.next();
 		if (addressBookMap.containsKey(bookName)) {
-			addressBookMap.get(bookName).deleteContact();                                            // we call the deleteContact function to delete the contact
+			addressBookMap.get(bookName).deleteContact();                                            
 		} else {
 			System.out.println("AddressBook doesn't exist, Please enter correct name.");
 			deleteContactInBook();
 		}
 	}
 
+	/**
+	 * [6] - This method will print the AddressBook i.e keys in the Map
+	 * 1 We are using the advanced for loop to print the key.
+	 * 2. We are sung the .keySet to get all the keys from the Map.
+	 */
 	public void printBook() {
 		System.out.println("These are AddressBooks in program.");
-		for (String i : addressBookMap.keySet()) {                                     // we use keySet to get all the keys and display it
+		for (String i : addressBookMap.keySet()) {                                     
 			System.out.println(i);
 		}
 	}
 
+	/**
+	 * We are using this method to print the contacts in the AddressBook.
+	 * 2 We have used the get(key) metod to print the contacts.
+	 */
 	public void printContactsInBook() {
 		for (String i : addressBookMap.keySet()) {
 			System.out.println(i);
-			System.out.println(addressBookMap.get(i).contacts);                     //we print the values of the key
+			System.out.println(addressBookMap.get(i).contacts);                     
 		}
 		System.out.println(" ");
 	}

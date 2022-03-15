@@ -1,5 +1,11 @@
 package com.addressBook.entity;
 
+/**
+ * In this class we are creating the contact and declaring the variables.
+ * We are making the variables private and accessing it through getters and setters.
+ * @author Tom
+ *
+ */
 public class ContactPerson {
 	private String firstName;
 	private String lastName;
@@ -10,19 +16,9 @@ public class ContactPerson {
 	private long phoneNumber;
 	private String email;
 
-	public ContactPerson(String firstName, String lastName, String address, String city, String state, int zip,      //parameterized constructor
-			long phoneNumber, String email) {
-		super();
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.address = address;
-		this.city = city;
-		this.state = state;
-		this.zip = zip;
-		this.phoneNumber = phoneNumber;
-		this.email = email;
-	}
-                //getters and setters to access the private variables
+	/**
+	 * Getters and setters
+	 */
 	public String getFirstName() {
 		return firstName;
 	}
@@ -86,7 +82,9 @@ public class ContactPerson {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
+/**
+ * toString for the display pattern
+ */
 	@Override
 	public String toString() {                                  //toStrings to format the display
 		return " \n ContactPerson [firstName=" + firstName + ", lastName=" + lastName + ", address=" + address + ", city="

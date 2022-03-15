@@ -4,18 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import com.addressBook.entity.ContactPerson;
-
+/**
+ *  This is the main function and we are calling the methods in this class.
+ * @author Tom
+ *
+ */
 public class AddressBookMain {
 	public static void main(String[] args) {
 
 		System.out.println("---------Address Book---------");
 		Scanner sc = new Scanner(System.in);
 
-		List<ContactPerson> contacts = new ArrayList<ContactPerson>(); // ArrayList
-		AddressBookServices addnew = new AddressBookServices();
-		MultipleAddressBook obj = new MultipleAddressBook(); // object to access the class methods
+		/**
+		 * We have created the objects of the class.
+		 */
+		MultipleAddressBook obj = new MultipleAddressBook(); 
 
 
+		/**
+		 * While loop to call the methods will the scanner is closed.
+		 */
 		while (true) {
 			System.out.println("Enter \n 1. To add the new AddressBook\n 2. To add contact in AddressBook\n "
 					+ "3. To edit the contact in AddressBook\n 4. To delete the contact in AddressBook\n 5. To delete the AddressBook\n "
