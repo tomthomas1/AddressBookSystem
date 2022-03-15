@@ -39,7 +39,8 @@ public class AddressBookServices {
 		for(ContactPerson i : contacts) {
 		   if(i.getFirstName().equals(name)) {
 			   System.out.println(" Given name already exists");
-		   } return;
+			   return;
+		   } 
         }  addPerson();
 	}
 	
@@ -242,5 +243,5 @@ public class AddressBookServices {
 		contacts.remove(contact);                                                                        
 		System.out.println("The contact has been deleted from the Address Book");
 	}
-
+	
 }

@@ -1,8 +1,12 @@
 package com.addressBook.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import com.addressBook.entity.ContactPerson;
 /**
  * This class have the implementation for the multiple address book.
  * We have created the methods for the address book manipulations.
@@ -13,6 +17,7 @@ import java.util.Scanner;
  * [4] Method to delete the addressBook
  * [5] The method deleteContactInBook to delete the specific contact in the book
  * [6] This method will print the AddressBook i.e keys in the Map
+ * [7] In this method we are searching the person by the city or State
  * @author Tom
  *
  */
@@ -20,8 +25,9 @@ public class MultipleAddressBook {
 	/**
 	 * We have created a HashMap and taken the key String as addressBook name and the value as AddressBookServices for contacts.
 	 */
-	Map<String, AddressBookServices> addressBookMap = new HashMap<>();              
-
+	Map<String, AddressBookServices> addressBookMap = new HashMap<>();    
+	List<ContactPerson> contacts = new ArrayList<ContactPerson>();
+	Scanner scanner = new Scanner(System.in);
 	/**
 	 * [1] The method addAddressBook will add the address book key to the Map.
 	 * 1. We are taking a addressBook name from the console and using the .containsKep method to check if the book is already present
@@ -136,5 +142,38 @@ public class MultipleAddressBook {
 		}
 		System.out.println(" ");
 	}
+	/**
+	 *[7] In this method we are searching the person by the city
+	 * 1. We are using a advanced for loop to get all the keys
+	 * 2. Then we are saving contacts to the list.
+	 * 3. Then we are using the streams filter to get the contact matching the city and then printing it.
+	 */
+      public void searchByCity() {
+		
+		System.out.println("Enter the name of the City to get the persons : ");
+		String cityName = scanner.next();
+		for (String i : addressBookMap.keySet()) {
+		List<ContactPerson>	arr = addressBookMap.get(i).contacts;
+		arr.stream().filter(person -> person.getCity().equals(cityName)).forEach(person -> System.out.println(person.getFirstName()));
+      }		
+    }
 
+      /**
+  	 * In this method we are searching the person by the state
+  	 * 1. We are using a advanced for loop to get all the keys
+  	 * 2. Then we are saving contacts to the list.
+  	 * 3. Then we are using the streams filter to get the contact matching the state and then printing it.
+  	 */
+public void searchByState() {
+	
+	System.out.println("Enter the name of the State to the get persons : ");
+	String stateName = scanner.next();
+	for (String i : addressBookMap.keySet()) {
+	List<ContactPerson>	arr = addressBookMap.get(i).contacts;
+	arr.stream().filter(person -> person.getState().equals(stateName)).forEach(person -> System.out.println(person.getFirstName()));
+  }		
 }
+} 
+		
+		
+	
