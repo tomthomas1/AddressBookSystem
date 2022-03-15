@@ -173,6 +173,21 @@ public void searchByState() {
 	arr.stream().filter(person -> person.getState().equals(stateName)).forEach(person -> System.out.println(person.getFirstName()));
   }		
 }
+/**
+ * We are displaying the people by region
+ * @param addressBookMap -  In this we are passing the hashmap
+ */
+public void displayPeopleByRegion(HashMap<String, ArrayList<ContactPerson>> addressBookMap) {
+	List<ContactPerson> contacts;
+	for (String name : addressBookMap.keySet()) {
+		System.out.println("People residing in: " + name);
+		contacts = addressBookMap.get(name);
+		for (ContactPerson contact : contacts) {
+			System.out.println(contact);
+		}
+	}
+
+}
 } 
 		
 		
