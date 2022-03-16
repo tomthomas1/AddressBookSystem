@@ -178,16 +178,29 @@ public void searchByState() {
  * @param addressBookMap -  In this we are passing the hashmap
  */
 public void displayPeopleByRegion(HashMap<String, ArrayList<ContactPerson>> addressBookMap) {
-	List<ContactPerson> contacts;
-	for (String name : addressBookMap.keySet()) {
-		System.out.println("People residing in: " + name);
-		contacts = addressBookMap.get(name);
-		for (ContactPerson contact : contacts) {
-			System.out.println(contact);
-		}
-	}
-
+	System.out.println("Enter the name of the region :");
+	String regionName = scanner.next();
+	
+	addressBookMap.values().stream()
+		    .map(region -> region.stream()
+			.filter(person -> person.getState().equals(regionName) || person.getCity().equals(regionName)))
+			.forEach(person -> person.forEach(personDetails -> System.out.println(personDetails)));
 }
+/**
+ * In this method we are displaying the number of person in the city or state.
+ * @param listToDisplay - we are passing the list of city or state
+ */
+public void countPeopleByRegion(HashMap<String, ArrayList<ContactPerson>> listToDisplay) {
+
+	System.out.println("Enter the name of the region :");
+	String regionName = scanner.next();
+	long countPeople = listToDisplay.values().stream()
+			.map(region -> region.stream().filter(person -> person.getState().equals(regionName) || person.getCity().equals(regionName)))
+			.count();
+				
+	System.out.println("Number of People residing in " + regionName+" are: "+countPeople+"\n");
+	
+   }
 } 
 		
 		
