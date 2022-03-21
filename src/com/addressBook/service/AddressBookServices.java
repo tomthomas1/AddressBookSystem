@@ -82,6 +82,7 @@ public class AddressBookServices {
 		String email = scan.next();
 		
 		person.setFirstName(firstName);
+		person.setAddress(address);
 		person.setLastName(lastName);
 		person.setPhoneNumber(phoneNumber);
 		person.setEmail(email);

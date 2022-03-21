@@ -21,7 +21,7 @@ import com.addressBook.entity.ContactPerson;
  * [5] The method deleteContactInBook to delete the specific contact in the book
  * [6] This method will print the AddressBook i.e keys in the Map
  * [7] In this method we are searching the person by the city or State
- * [8]-Method to sort the address book by name
+ * [8]-Method to sort the address book by name/city/state/zip
  * @author Tom
  *
  */
@@ -209,26 +209,58 @@ public void countPeopleByRegion(HashMap<String, ArrayList<ContactPerson>> listTo
    }
 
 /**
- * [8]-Method to sort the address book by name
- * In this method we are sorting the address book by the person first name
+ * [8]-Method to sort the address book
+ * In this method we are sorting the address book by comparing 2 values.
  *  we have used the sorted method and compared 2 contacts and arranged them.
  *  In this way it will compare and arrange it.
  */
-public void sortAddressBook() {
+public void sortAddressBook(int sortingChoice){
+	List<ContactPerson> sortedContactList;
 	for (String i : addressBookMap.keySet()) {
-		 Map<String, ContactPerson> con = addressBookMap.get(i).contacts;
+		 Map<String, ContactPerson> contactList = addressBookMap.get(i).contacts;
 		
-		List<ContactPerson> sorted = con.values().stream().sorted((firstperson, secondperson) -> 
-		firstperson.getFirstName().compareTo(secondperson.getFirstName())).collect(Collectors.toList());
-		
+		 switch(sortingChoice) {
+			
+			case 1: sortedContactList = contactList.values().stream()
+					.sorted((firstperson, secondperson) -> firstperson.getFirstName().compareTo(secondperson.getFirstName()))
+					.collect(Collectors.toList());
+					printSortedList(sortedContactList);
+					break;
+				
+			case 2: sortedContactList = contactList.values().stream()
+					.sorted((firstperson, secondperson) -> firstperson.getCity().compareTo(secondperson.getCity()))
+					.collect(Collectors.toList());
+					printSortedList(sortedContactList);
+					break;
+				
+			case 3: sortedContactList = contactList.values().stream()
+					.sorted((firstperson, secondperson) -> firstperson.getState().compareTo(secondperson.getState()))
+					.collect(Collectors.toList());
+					printSortedList(sortedContactList);
+					break;
+				
+			case 4: sortedContactList = contactList.values().stream()
+					.sorted((firstperson, secondperson) -> Long.valueOf(firstperson.getZip()).compareTo(Long.valueOf(secondperson.getZip())))
+					.collect(Collectors.toList());
+					printSortedList(sortedContactList);
+					break;
+		}
+				
+	}
+}
+	
+	public void printSortedList(List<ContactPerson> sortedContactList) {
 		System.out.println("------ Sorted Address Book ------");
-		Iterator iterator = sorted.iterator();
+		Iterator iterator = sortedContactList.iterator();
 		while (iterator.hasNext()) {
 			System.out.println(iterator.next());
 			System.out.println();
 		}
+		System.out.println("-----------------------------------------");
 	}
-}
+
+
+
 } 
 		
 		
