@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.Iterator;
+
 
 import com.addressBook.entity.ContactPerson;
 /**
@@ -18,6 +21,7 @@ import com.addressBook.entity.ContactPerson;
  * [5] The method deleteContactInBook to delete the specific contact in the book
  * [6] This method will print the AddressBook i.e keys in the Map
  * [7] In this method we are searching the person by the city or State
+ * [8]-Method to sort the address book by name
  * @author Tom
  *
  */
@@ -25,8 +29,10 @@ public class MultipleAddressBook {
 	/**
 	 * We have created a HashMap and taken the key String as addressBook name and the value as AddressBookServices for contacts.
 	 */
-	Map<String, AddressBookServices> addressBookMap = new HashMap<>();    
-	List<ContactPerson> contacts = new ArrayList<ContactPerson>();
+	Map<String, AddressBookServices> addressBookMap = new HashMap<>(); 
+	public Map<String, ContactPerson> contacts = new HashMap<String,ContactPerson>();
+	//List<ContactPerson> contacts = new ArrayList<ContactPerson>();
+	ContactPerson person = new ContactPerson();
 	Scanner scanner = new Scanner(System.in);
 	/**
 	 * [1] The method addAddressBook will add the address book key to the Map.
@@ -153,7 +159,7 @@ public class MultipleAddressBook {
 		System.out.println("Enter the name of the City to get the persons : ");
 		String cityName = scanner.next();
 		for (String i : addressBookMap.keySet()) {
-		List<ContactPerson>	arr = addressBookMap.get(i).contacts;
+		List<ContactPerson>	arr = (List<ContactPerson>) addressBookMap.get(i).contacts;
 		arr.stream().filter(person -> person.getCity().equals(cityName)).forEach(person -> System.out.println(person.getFirstName()));
       }		
     }
@@ -169,7 +175,7 @@ public void searchByState() {
 	System.out.println("Enter the name of the State to the get persons : ");
 	String stateName = scanner.next();
 	for (String i : addressBookMap.keySet()) {
-	List<ContactPerson>	arr = addressBookMap.get(i).contacts;
+	List<ContactPerson>	arr = (List<ContactPerson>) addressBookMap.get(i).contacts;
 	arr.stream().filter(person -> person.getState().equals(stateName)).forEach(person -> System.out.println(person.getFirstName()));
   }		
 }
@@ -201,6 +207,28 @@ public void countPeopleByRegion(HashMap<String, ArrayList<ContactPerson>> listTo
 	System.out.println("Number of People residing in " + regionName+" are: "+countPeople+"\n");
 	
    }
+
+/**
+ * [8]-Method to sort the address book by name
+ * In this method we are sorting the address book by the person first name
+ *  we have used the sorted method and compared 2 contacts and arranged them.
+ *  In this way it will compare and arrange it.
+ */
+public void sortAddressBook() {
+	for (String i : addressBookMap.keySet()) {
+		 Map<String, ContactPerson> con = addressBookMap.get(i).contacts;
+		
+		List<ContactPerson> sorted = con.values().stream().sorted((firstperson, secondperson) -> 
+		firstperson.getFirstName().compareTo(secondperson.getFirstName())).collect(Collectors.toList());
+		
+		System.out.println("------ Sorted Address Book ------");
+		Iterator iterator = sorted.iterator();
+		while (iterator.hasNext()) {
+			System.out.println(iterator.next());
+			System.out.println();
+		}
+	}
+}
 } 
 		
 		

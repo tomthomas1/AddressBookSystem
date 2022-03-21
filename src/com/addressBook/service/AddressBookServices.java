@@ -1,9 +1,12 @@
 package com.addressBook.service;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+
 import com.addressBook.entity.ContactPerson;
 
 /**
@@ -22,30 +25,11 @@ public class AddressBookServices {
 	/**
 	 * We have created a list of ContactPerson type and also a HashMap for multiple address book.
 	 */
-	List<ContactPerson> contacts = new ArrayList<ContactPerson>();
-	Map<String, AddressBookServices> addressBookMap = new HashMap<>(); 
+	public Map<String, ContactPerson> contacts = new HashMap<String,ContactPerson>();
 	public static HashMap<String, ArrayList<ContactPerson>> personByCity  = new HashMap<String, ArrayList<ContactPerson>>();
 	public static HashMap<String, ArrayList<ContactPerson>> personByState = new HashMap<String, ArrayList<ContactPerson>>();
-	ContactPerson person = new ContactPerson();
 
-	/**
-	 * In this method we are checking if the contacts added is duplicate or not with reference to the first name.
-	 * 1. We are taking first name from the user.
-	 * 2. Then we are checking in the ArrayList if the name matches the present firstname.
-	 * 3. If present then it will give error.
-	 * 4. Else it will call the addPerson Method
-	 */
-	public void duplicateCheck() {  
-		System.out.print(" Please enter the first name: ");
-		name = sc.next();
-		for(ContactPerson i : contacts) {
-		   if(i.getFirstName().equals(name)) {
-			   System.out.println(" Given name already exists");
-			   return;
-		   } 
-        }  addPerson();
-	}
-	
+		
 	/**
 	 * We have created this class to take number of contacts from the user.
 	 * We have used the For loop and called the check method.
@@ -55,7 +39,7 @@ public class AddressBookServices {
         int number = sc.nextInt();
         for (int i = 0; i < number; i++) {
             System.out.println("Enter the contact details of person ");
-            duplicateCheck();
+           addPerson();
         }
     }
 	
@@ -68,7 +52,13 @@ public class AddressBookServices {
     public void addPerson() {
     	ContactPerson person = new ContactPerson();
     	Scanner scan = new Scanner(System.in);
-		String firstName = name;
+    	System.out.println("Enter First Name: ");
+		String firstName = scan.next();
+		
+		if(contacts.containsKey(firstName)) {
+			System.out.println("Contact Already Exists");
+			return;
+		} 
 
 		System.out.print(" Please enter the last name: ");
 		String lastName = scan.next();
@@ -100,49 +90,10 @@ public class AddressBookServices {
 		person.setZip(zip);
 		addPersonToCity(person);
 		addPersonToState(person);
-
-		contacts.add(person);
+   
+		contacts.put(firstName, person);
 		
 	}
-
-    /**
-     *  We have created the findContact method to find a specific contact in ArrayList for manipulation.
-     *  1. We are taking the firstname from the console. 
-     *  2. Then will advanced for loop we are iterating through the ArrayList 
-     *  3. If the name matches then we will increment the duplicate counter.
-     *  4. We have created the duplicate counter to check if same name exists twice.
-     *  5. Else it will return the contact.
-     * @return - It will return the contact to take action on.
-     */
-	public ContactPerson findContact() {                                         
-		System.out.println("\n Enter the first name of the contact to edit: ");
-		String name = sc.next();
-		int duplicate = 0;                                                   
-		ContactPerson temp = null;
-		for (ContactPerson contact : contacts) {
-			if (contact.getFirstName().equals(name)) {
-				duplicate++;
-				temp = contact;
-			}
-		}
-		if (duplicate == 1) {
-			return temp;
-
-		} else if( duplicate > 1) {
-			System.out.print(" There are multiple contacts with given name.\n Please enter their email id: ");
-			String email = sc.next();
-			for (ContactPerson contact : contacts) {
-				if (contact.getFirstName().equals(name) && contact.getEmail().equals(email)) {
-					return contact;
-				}
-			}
-		}
-		else{
-			System.out.println("No contact with the given first name. Please enter the correct first name");
-			findContact();
-		}
-		return temp;
-	} 
 
 	/**
 	 * [2] The editContact method will edit the contact in the list.
@@ -152,7 +103,13 @@ public class AddressBookServices {
 	 */
 	public void editContact() {
 
-		ContactPerson contact = findContact();
+		ContactPerson contact = new ContactPerson();
+
+		System.out.println("Enter the first name:");
+		String firstName = sc.next();
+		
+		if(contacts.containsKey(firstName)) {
+			contact = contacts.get(firstName);
 
 		System.out.println("Enter your choice to edit: " + "\n 1.Edit first name" + "\n 2.Edit last name"
 				+ "\n 3.Edit address" + "\n 4.Edit city" + "\n 5.Edit state" + "\n 6.Edit zipcode"
@@ -223,7 +180,7 @@ public class AddressBookServices {
 			break;
 		}
 		System.out.println("The contact after editing is : " + contact);
-
+		}
 	}
 	
 	/**
@@ -232,6 +189,7 @@ public class AddressBookServices {
 	 */
 	public void displayContact() {                                                       
 			System.out.println(contacts);
+			System.out.println("Value is " + contacts.values());
 	}
 	
 	/**
@@ -240,13 +198,16 @@ public class AddressBookServices {
 	 * 2. Then we will call the remove method to delete the contact from the list.
 	 */
 	public void deleteContact() {                                                                      
-		ContactPerson contact = findContact();
-		if (contact == null) {
-			System.out.println("No contact found with the given name");
-			return;
+		System.out.println("Enter the first name of the person to be deleted");
+		String firstName = sc.next();
+		if(contacts.containsKey(firstName)) {
+			contacts.remove(firstName);
+			System.out.println("Successfully Deleted");
 		}
-		contacts.remove(contact);                                                                        
-		System.out.println("The contact has been deleted from the Address Book");
+		else {
+			System.out.println("Contact Not Found!");
+		}
+		
 	}
 	
 	/**
@@ -278,6 +239,6 @@ public class AddressBookServices {
 			stateList.add(contact);
 			personByState.put(contact.getState(), stateList);
 		}
-	}
-	
+	}	
+
 }
