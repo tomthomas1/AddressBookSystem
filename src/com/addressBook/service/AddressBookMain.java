@@ -29,7 +29,8 @@ public class AddressBookMain {
 			System.out.println("Enter \n 1. To add the new AddressBook\n 2. To add contact in AddressBook\n "
 					+ "3. To edit the contact in AddressBook\n 4. To delete the contact in AddressBook\n 5. To delete the AddressBook\n "
 					+ "6. To Print the AddressBook\n 7. To Print the contacts in AddressBook\n 8. Search Person By City. \n 9. Search Person by State \n 10. View Person by City"
-					+ "\n 11. View Person by State \n 12. Count People \n 13. Sort Address Book \n 0. To exit");
+					+ "\n 11. View Person by State \n 12. Count People \n 13. Sort Address Book "
+					+ "\n 14. Write To File \n 15. Read From File \n 0. To exit");
 			Scanner scanner = new Scanner(System.in);
 			int choice = scanner.nextInt();
 			switch (choice) {
@@ -79,6 +80,12 @@ public class AddressBookMain {
 				System.out.println("1.FirstName\n2.City\n3.State\n4.Zip Code");
 				int sortingChoice = sc.nextInt();
 				obj.sortAddressBook(sortingChoice);
+				break;
+			case 14:
+			     add.writeToAddressBookFile();
+				break;
+			case 15:
+				add.readDataFromFile();
 				break;
 			case 0:
 				System.exit(0);

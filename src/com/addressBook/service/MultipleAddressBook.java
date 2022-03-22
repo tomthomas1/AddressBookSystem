@@ -1,5 +1,9 @@
 package com.addressBook.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +34,6 @@ public class MultipleAddressBook {
 	 * We have created a HashMap and taken the key String as addressBook name and the value as AddressBookServices for contacts.
 	 */
 	Map<String, AddressBookServices> addressBookMap = new HashMap<>(); 
-	public Map<String, ContactPerson> contacts = new HashMap<String,ContactPerson>();
-	//List<ContactPerson> contacts = new ArrayList<ContactPerson>();
 	ContactPerson person = new ContactPerson();
 	Scanner scanner = new Scanner(System.in);
 	/**
@@ -259,9 +261,8 @@ public void sortAddressBook(int sortingChoice){
 		System.out.println("-----------------------------------------");
 	}
 
+}
 
-
-} 
 		
 		
 	

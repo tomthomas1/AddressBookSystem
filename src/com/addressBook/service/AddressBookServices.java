@@ -1,4 +1,8 @@
 package com.addressBook.service;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,7 +32,6 @@ public class AddressBookServices {
 	public Map<String, ContactPerson> contacts = new HashMap<String,ContactPerson>();
 	public static HashMap<String, ArrayList<ContactPerson>> personByCity  = new HashMap<String, ArrayList<ContactPerson>>();
 	public static HashMap<String, ArrayList<ContactPerson>> personByState = new HashMap<String, ArrayList<ContactPerson>>();
-
 		
 	/**
 	 * We have created this class to take number of contacts from the user.
@@ -241,5 +244,51 @@ public class AddressBookServices {
 			personByState.put(contact.getState(), stateList);
 		}
 	}	
+	
+	/**
+	 * Method to write to the file
+	 */
+	 public void writeToAddressBookFile() {
+			
+			
+			String fileName = "write.txt";
+			
+			StringBuffer addressBookBuffer = new StringBuffer();
+			contacts.values().stream().forEach(contact -> {
+				String personDataString = contact.toString().concat("\n");
+				addressBookBuffer.append(personDataString);
+			});
+
+			try {
+				Files.write(Paths.get(fileName), addressBookBuffer.toString().getBytes());
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+	
+	 /**
+	  * Method to read from the file
+	  * @return - the list
+	  */
+	 public List<String> readDataFromFile() {
+			
+			List<String> addressBookList = new ArrayList<String>();
+			String fileName = "write.txt";
+			System.out.println("Reading from : "+fileName+"\n");
+			try {
+				Files.lines(new File(fileName).toPath())
+					.map(line -> line.trim())
+					.forEach(contacts -> {
+						addressBookList.add(contacts);
+				});
+				
+			}
+			catch(IOException e){
+				e.printStackTrace();
+			}
+			return addressBookList;
+		}
 
 }
