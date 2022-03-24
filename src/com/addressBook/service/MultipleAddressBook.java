@@ -12,257 +12,213 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.Iterator;
 
-
 import com.addressBook.entity.ContactPerson;
+
 /**
- * This class have the implementation for the multiple address book.
- * We have created the methods for the address book manipulations.
- * We have used a HashMap to store multiple addressBook
+ * We have created this class to do the manipulations on the address Book.
  * [1] The method addAddressBook will add the address book key to the Map.
- * [2] The method addContact will add the contact to the addressBook
- * [3] The method editContact will edit the contacts in the address book
- * [4] Method to delete the addressBook
- * [5] The method deleteContactInBook to delete the specific contact in the book
- * [6] This method will print the AddressBook i.e keys in the Map
- * [7] In this method we are searching the person by the city or State
- * [8]-Method to sort the address book by name/city/state/zip
+ * [2] The method editContact will edit the contacts in the address book.
+ * [3]Method to search the address book by city.
+ * [4]Method to search the address book by State.
+ * [5] To display the contact by city or state
+ * [6] Method to count the contacts in particular state or city.
+ * [7] To display the directory.
  * @author Tom
  *
  */
 public class MultipleAddressBook {
+	public AddressBookServices addressBook;
+	Scanner scannerObject = new Scanner(System.in);
+	Map<String, AddressBookServices> addressBookMap = new HashMap<String, AddressBookServices>();
+
 	/**
-	 * We have created a HashMap and taken the key String as addressBook name and the value as AddressBookServices for contacts.
+	 * We have created this class to call the functions of the address book 
 	 */
-	Map<String, AddressBookServices> addressBookMap = new HashMap<>(); 
-	ContactPerson person = new ContactPerson();
-	Scanner scanner = new Scanner(System.in);
+	public void addressBookMain() {
+
+		boolean moreChanges = true;
+		do {
+
+			System.out.println("\nChoose the operation on the Directory you want to perform");
+			System.out.println(
+					"1.Add an Address Book\n2.Edit Existing Address Book\n3.Search Person By Region\n4.View People By Region\n5.Count People By Region\n6.Display Address book Directory\n7.Exit Address book System");
+
+			switch (scannerObject.nextInt()) {
+			case 1:
+				addAddressBook();
+				break;
+			case 2:
+				editAddressBook();
+				break;
+			case 3:
+				System.out.println("Enter \n1.Search By City\n2.Search By State");
+				int searChoice = scannerObject.nextInt();
+				if (searChoice == 1)
+					searchByCity();
+				else
+					searchByState();
+				break;
+			case 4:
+				System.out.println("Enter \n1.Display By City\n2.Display By State");
+				int displayChoice = scannerObject.nextInt();
+				if (displayChoice == 1)
+					displayPeopleByRegion(AddressBookServices.personByCity);
+				else
+					displayPeopleByRegion(AddressBookServices.personByState);
+				break;
+			case 5:
+				System.out.println("Enter \n1.Display By City\n2.Display By State");
+				int countChoice = scannerObject.nextInt();
+				if (countChoice == 1)
+					countPeopleByRegion(AddressBookServices.personByCity);
+				else
+					countPeopleByRegion(AddressBookServices.personByState);
+				break;
+			case 6:
+				displayDirectoryContents();
+				break;
+			case 7:
+				moreChanges = false;
+				System.out.println("Exiting Address Book Directory !");
+			}
+
+		} while (moreChanges);
+	}
+
 	/**
 	 * [1] The method addAddressBook will add the address book key to the Map.
 	 * 1. We are taking a addressBook name from the console and using the .containsKep method to check if the book is already present
 	 * 2. Else we will use the put method to add the key and value.
 	 */
-	public void addAddressBook() {                                                  
-		System.out.println("Enter Name of new Address Book: ");
-		Scanner scanner = new Scanner(System.in);
-		String bookName = scanner.next();
-		if (addressBookMap.containsKey(bookName)) {                               
-			System.out.println("Address book with this name exists, Enter new name.");
-			addAddressBook();
-		} else {
-			AddressBookServices addressBook = new AddressBookServices();
-			addressBookMap.put(bookName, addressBook);                              //adding address book and contacts to HashMap
-			System.out.println("Address Book " + bookName + " successfully added!!");
+	public void addAddressBook() {
+
+		System.out.println("Enter the name of the Address Book you want to add");
+		String bookName = scannerObject.next();
+
+		if (addressBookMap.containsKey(bookName)) {
+			System.out.println("Book Name Already Exists");
+			return;
 		}
+		AddressBookServices addressBook = new AddressBookServices();
+		addressBook.setAddressBookName(bookName);
+		addressBookMap.put(bookName, addressBook);
+
 	}
 
 	/**
-	 * [2] The method addContact will add the contact to the addressBook
-	 * 1. First we will ask the AddressBook name to add the contact to.
-	 * 2. Then we will get the key from the HashMap
-	 * 3. We are then just calling the add contact method and adding the contact to our ArrayList.
-	 */
-	public void addContact() {                                                     
-		System.out.println("Enter the name of Address book to add the contact.");
-		Scanner scanner = new Scanner(System.in);
-		String newContact = scanner.nextLine();
-		AddressBookServices addressBook = addressBookMap.get(newContact); 
-		if (addressBook == null) {
-			System.out.println("No book found");
-
-		} else {
-			addressBookMap.get(newContact).addContact();                         
-		}
-	}
-
-	/**
-	 * [3] The method editContact will edit the contacts in the address book
+	 * [2] The method editContact will edit the contacts in the address book
 	 * 1. First we will ask the AddressBook name to edit the contact to.
 	 * 2. Then we will get the key from the HashMap
 	 * 3. We are then just calling the edit contact method
 	 */
-	public void editContactInBook() {
-		System.out.println("Enter Name of Address Book you want to edit: ");
-		Scanner scanner = new Scanner(System.in);
-		String editBookName = scanner.next();
-		if (addressBookMap.containsKey(editBookName)) {
-			addressBookMap.get(editBookName).editContact();                               // calling the edit contact method to edit contacts
+	public void editAddressBook() {
+
+		System.out.println("Enter the Name of the Address Book which you want to edit:");
+		String addressBookToEdit = scannerObject.next();
+
+		if (addressBookMap.containsKey(addressBookToEdit)) {
+			addressBook = addressBookMap.get(addressBookToEdit);
+			addressBook.operation();
 		} else {
-			System.out.println("AddressBook doesn't exist, Please enter correct name.");
-			editContactInBook();
+			System.out.println("Book Does Not Exist");
+		}
+
+	}
+
+	/**
+	 * [3]Method to search the address book by city.
+	 * 1. We will ask for the city and the person name to search
+	 * 2. Then we will search in the list for the given city and name using the .equals method.
+	 * 3. If found then we will display the contact.
+	 */
+	public void searchByCity() {
+
+		System.out.println("Enter the name of the City where the Person resides : ");
+		String cityName = scannerObject.next();
+		System.out.println("Enter the name of the Person : ");
+		String personName = scannerObject.next();
+
+		for (AddressBookServices addressBook : addressBookMap.values()) {
+			ArrayList<ContactPerson> contactList = addressBook.getContact();
+			contactList.stream()
+					.filter(person -> person.getFirstName().equals(personName) && person.getCity().equals(cityName))
+					.forEach(person -> System.out.println(person));
+
 		}
 	}
 
 	/**
-	 * [4] - Method to delete the addressBook
-	 * 1. In this we will delete the specific key and its contacts.
-	 * 2. We are using the remove method to delete the key & value form the map 
+	 * [4]Method to search the address book by State.
+	 * 1. We will ask for the state and the person name to search
+	 * 2. Then we will search in the list for the given state and name using the .equals method.
+	 * 3. If found then we will display the contact.
 	 */
-	public void deleteAddressBook() {
-		System.out.println("Enter Name of Address Book you want to delete: ");
-		Scanner scanner = new Scanner(System.in);
-		String bookName = scanner.next();
-		if (addressBookMap.containsKey(bookName)) {                                       //we use containsKey to check if addressBook present 
-			addressBookMap.remove(bookName);                                                 // and use remove fun to remove the book
-		} else {
-			System.out.println("AddressBook doesn't exist, Please enter correct name.");
-			deleteAddressBook();
+	public void searchByState() {
+
+		System.out.println("Enter the name of the State where the Person resides : ");
+		String stateName = scannerObject.next();
+		System.out.println("Enter the name of the Person : ");
+		String personName = scannerObject.next();
+
+		for (AddressBookServices addressBook : addressBookMap.values()) {
+			ArrayList<ContactPerson> contactList = ((AddressBookServices) addressBook).getContact();
+			contactList.stream()
+					.filter(person -> person.getFirstName().equals(personName) && person.getState().equals(stateName))
+					.forEach(person -> System.out.println(person));
+
 		}
+
 	}
 
 	/**
-	 * [5] The method deleteContactInBook to delete the specific contact in the book
-	 *  1. This method will only delete the value and not the key.
-	 *  2. We will check if the key is present and then we will call the deleteContact method and delete the specific contact.
-	 * 
+	 * [5] To display the contact by city or state
+	 * 1. We will get the city or state name
+	 * 2. Here will pass the hashMap
+	 * 3. We will use the filter method to get the contact with the given city or state.
+	 * 4. Then we will display the contacts.
+	 * @param listToDisplay
 	 */
-	public void deleteContactInBook() {
-		System.out.println("Enter Name of Address Book you want to delete the contacts in it: ");
-		Scanner scanner = new Scanner(System.in);
-		String bookName = scanner.next();
-		if (addressBookMap.containsKey(bookName)) {
-			addressBookMap.get(bookName).deleteContact();                                            
-		} else {
-			System.out.println("AddressBook doesn't exist, Please enter correct name.");
-			deleteContactInBook();
-		}
+	public void displayPeopleByRegion(HashMap<String, ArrayList<ContactPerson>> listToDisplay) {
+
+		System.out.println("Enter the name of the region :");
+		String regionName = scannerObject.next();
+
+		listToDisplay.values().stream()
+				.map(region -> region.stream()
+						.filter(person -> person.getState().equals(regionName) || person.getCity().equals(regionName)))
+				.forEach(person -> person.forEach(personDetails -> System.out.println(personDetails)));
 	}
 
 	/**
-	 * [6] - This method will print the AddressBook i.e keys in the Map
-	 * 1 We are using the advanced for loop to print the key.
-	 * 2. We are sung the .keySet to get all the keys from the Map.
+	 * [6] Method to count the contacts in particular state or city.
+	 * We are using the count method to count the contacts after we filter it.
+	 * @param listToDisplay
 	 */
-	public void printBook() {
-		System.out.println("These are AddressBooks in program.");
-		for (String i : addressBookMap.keySet()) {                                     
-			System.out.println(i);
-		}
+	public void countPeopleByRegion(HashMap<String, ArrayList<ContactPerson>> listToDisplay) {
+
+		System.out.println("Enter the name of the region :");
+		String regionName = scannerObject.next();
+
+		long countPeople = listToDisplay.values().stream()
+				.map(region -> region.stream()
+						.filter(person -> person.getState().equals(regionName) || person.getCity().equals(regionName)))
+				.count();
+
+		System.out.println("Number of People residing in " + regionName + " are: " + countPeople + "\n");
+
 	}
 
 	/**
-	 * We are using this method to print the contacts in the AddressBook.
-	 * 2 We have used the get(key) metod to print the contacts.
+	 * [7] To display the directory.
+	 * We are using the keySet to display the contact in the Map.
 	 */
-	public void printContactsInBook() {
-		for (String i : addressBookMap.keySet()) {
-			System.out.println(i);
-			System.out.println(addressBookMap.get(i).contacts);                     
-		}
-		System.out.println(" ");
-	}
-	/**
-	 *[7] In this method we are searching the person by the city
-	 * 1. We are using a advanced for loop to get all the keys
-	 * 2. Then we are saving contacts to the list.
-	 * 3. Then we are using the streams filter to get the contact matching the city and then printing it.
-	 */
-      public void searchByCity() {
-		
-		System.out.println("Enter the name of the City to get the persons : ");
-		String cityName = scanner.next();
-		for (String i : addressBookMap.keySet()) {
-		List<ContactPerson>	arr = (List<ContactPerson>) addressBookMap.get(i).contacts;
-		arr.stream().filter(person -> person.getCity().equals(cityName)).forEach(person -> System.out.println(person.getFirstName()));
-      }		
-    }
+	public void displayDirectoryContents() {
 
-      /**
-  	 * In this method we are searching the person by the state
-  	 * 1. We are using a advanced for loop to get all the keys
-  	 * 2. Then we are saving contacts to the list.
-  	 * 3. Then we are using the streams filter to get the contact matching the state and then printing it.
-  	 */
-public void searchByState() {
-	
-	System.out.println("Enter the name of the State to the get persons : ");
-	String stateName = scanner.next();
-	for (String i : addressBookMap.keySet()) {
-	List<ContactPerson>	arr = (List<ContactPerson>) addressBookMap.get(i).contacts;
-	arr.stream().filter(person -> person.getState().equals(stateName)).forEach(person -> System.out.println(person.getFirstName()));
-  }		
-}
-/**
- * We are displaying the people by region
- * @param addressBookMap -  In this we are passing the hashmap
- */
-public void displayPeopleByRegion(HashMap<String, ArrayList<ContactPerson>> addressBookMap) {
-	System.out.println("Enter the name of the region :");
-	String regionName = scanner.next();
-	
-	addressBookMap.values().stream()
-		    .map(region -> region.stream()
-			.filter(person -> person.getState().equals(regionName) || person.getCity().equals(regionName)))
-			.forEach(person -> person.forEach(personDetails -> System.out.println(personDetails)));
-}
-/**
- * In this method we are displaying the number of person in the city or state.
- * @param listToDisplay - we are passing the list of city or state
- */
-public void countPeopleByRegion(HashMap<String, ArrayList<ContactPerson>> listToDisplay) {
+		System.out.println("----- Contents of the Address Book Directory-----");
+		for (String eachBookName : addressBookMap.keySet()) {
 
-	System.out.println("Enter the name of the region :");
-	String regionName = scanner.next();
-	long countPeople = listToDisplay.values().stream()
-			.map(region -> region.stream().filter(person -> person.getState().equals(regionName) || person.getCity().equals(regionName)))
-			.count();
-				
-	System.out.println("Number of People residing in " + regionName+" are: "+countPeople+"\n");
-	
-   }
-
-/**
- * [8]-Method to sort the address book
- * In this method we are sorting the address book by comparing 2 values.
- *  we have used the sorted method and compared 2 contacts and arranged them.
- *  In this way it will compare and arrange it.
- */
-public void sortAddressBook(int sortingChoice){
-	List<ContactPerson> sortedContactList;
-	for (String i : addressBookMap.keySet()) {
-		 Map<String, ContactPerson> contactList = addressBookMap.get(i).contacts;
-		
-		 switch(sortingChoice) {
-			
-			case 1: sortedContactList = contactList.values().stream()
-					.sorted((firstperson, secondperson) -> firstperson.getFirstName().compareTo(secondperson.getFirstName()))
-					.collect(Collectors.toList());
-					printSortedList(sortedContactList);
-					break;
-				
-			case 2: sortedContactList = contactList.values().stream()
-					.sorted((firstperson, secondperson) -> firstperson.getCity().compareTo(secondperson.getCity()))
-					.collect(Collectors.toList());
-					printSortedList(sortedContactList);
-					break;
-				
-			case 3: sortedContactList = contactList.values().stream()
-					.sorted((firstperson, secondperson) -> firstperson.getState().compareTo(secondperson.getState()))
-					.collect(Collectors.toList());
-					printSortedList(sortedContactList);
-					break;
-				
-			case 4: sortedContactList = contactList.values().stream()
-					.sorted((firstperson, secondperson) -> Long.valueOf(firstperson.getZip()).compareTo(Long.valueOf(secondperson.getZip())))
-					.collect(Collectors.toList());
-					printSortedList(sortedContactList);
-					break;
-		}
-				
-	}
-}
-	
-	public void printSortedList(List<ContactPerson> sortedContactList) {
-		System.out.println("------ Sorted Address Book ------");
-		Iterator iterator = sortedContactList.iterator();
-		while (iterator.hasNext()) {
-			System.out.println(iterator.next());
-			System.out.println();
+			System.out.println(eachBookName);
 		}
 		System.out.println("-----------------------------------------");
 	}
-
 }
-
-		
-		
-	
