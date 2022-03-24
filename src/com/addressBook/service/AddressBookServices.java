@@ -2,13 +2,16 @@ package com.addressBook.service;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.*;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +26,7 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 import com.addressBook.entity.ContactPerson;
+import com.google.gson.Gson;
 
 /**
  * In this class we are creating methods for the contact manipulation. This
@@ -38,7 +42,8 @@ import com.addressBook.entity.ContactPerson;
  * [9] Method to read the data from the file and display in console.
  * [10] Method to write the data to a CSV file
  * [11] Method to read data from a CSV file
- * 
+ * [12] Method to write data to a JSON file
+ * [13] To read data from JSON File 
  * @author Tom
  *
  */
@@ -93,7 +98,7 @@ public class AddressBookServices {
 
 			System.out.println("\nChoose the operation you want to perform");
 			System.out.println(
-					"1.Add Contact to Address Book\n2.Edit Existing contact\n3.Display contact book\n4.Delete Contact\n5.Display Sorted Address Book \n6.Write To File\n7.Read From File \n8.Write Data To CSV File \n9.Read Data From CSV File \n10.Exit Address book System");
+					"1.Add Contact to Address Book\n2.Edit Existing contact\n3.Display contact book\n4.Delete Contact\n5.Display Sorted Address Book \n6.Write To File\n7.Read From File \n8.Write Data To CSV File \n9.Read Data From CSV File \n10.Write Data To JSON \n11.Read Data From JSON \n12.Exit Address book System");
 
 			switch (scannerObject.nextInt()) {
 			case 1:
@@ -135,8 +140,24 @@ public class AddressBookServices {
                 }
                 break;
 			case 10:
+				try {
+					writeDataToJson();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				break;
+
+			case 11:
+				try {
+					readDataFromJson();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				break;
+
+			case 12:
 				moreChanges = false;
-				System.out.println("Exiting Address Book: "+this.getAddressBookName()+" !");
+				System.out.println("Exiting Address Book: " + this.getAddressBookName() + " !");
 
 			}
 
@@ -498,4 +519,48 @@ public class AddressBookServices {
 			}
 		}
 	}
+	
+	/**
+	 * [12] Method to write data to a JSON file
+	 * @throws IOException - to throw IO exception 
+	 */
+	public void writeDataToJson() throws IOException {
+		
+		String fileName = "./" + this.getAddressBookName() + ".json";
+		Path filePath = Paths.get(fileName);
+		Gson gson = new Gson();
+		String json = gson.toJson(contact.values());
+		FileWriter writer = new FileWriter(String.valueOf(filePath));
+		writer.write(json);
+		writer.close();
+
+	}
+	
+	/**
+	 * [13] To read data from Json File 
+	 * @throws IOException - to throw IO exception
+	 */
+    public void readDataFromJson() throws IOException {
+    	
+        ArrayList<ContactPerson> contactList;
+        String fileName = "./"+this.getAddressBookName()+".json";
+        Path filePath = Paths.get(fileName);
+        
+        try (Reader reader = Files.newBufferedReader(filePath)) {
+            Gson gson = new Gson();
+            contactList = new ArrayList<>(Arrays.asList(gson.fromJson(reader, ContactPerson[].class)));
+            for (ContactPerson contact : contactList) {
+            	System.out.println("{");
+                System.out.println("Firstname : " + contact.getFirstName());
+                System.out.println("Lastname : " + contact.getLastName());
+                System.out.println("City : " + contact.getCity());
+                System.out.println("State : " + contact.getState());
+                System.out.println("Zip Code : " + contact.getZip());
+                System.out.println("Phone number : " + contact.getPhoneNumber());
+                System.out.println("Email : " + contact.getEmail());
+                System.out.println("}\n");
+            }
+        }
+    }
+
 }

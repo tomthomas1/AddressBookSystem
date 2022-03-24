@@ -88,10 +88,8 @@ public class ContactPerson {
 	 * toString for the display pattern
 	 */
 	@Override
-	public String toString() { // toStrings to format the display
-		return " \n ContactPerson [firstName=" + firstName + ", lastName=" + lastName + ", address=" + address
-				+ ", city=" + city + ", state=" + state + ", zip=" + zip + ", phoneNumber=" + phoneNumber + ", email="
-				+ email + "]";
+	public String toString() {
+		
+		return "First Name - "+firstName+", Last Name - "+lastName+", Phone Number - "+phoneNumber+", Email - "+email+", City - "+city+", State - "+state+", Zip Code - "+zip;
 	}
-
 }
