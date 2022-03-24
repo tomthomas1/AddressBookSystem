@@ -1,8 +1,12 @@
 package com.addressBook.service;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.file.Files;
+import java.nio.*;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 import com.addressBook.entity.ContactPerson;
 
@@ -22,10 +32,12 @@ import com.addressBook.entity.ContactPerson;
  * [3] Method delete to delete a specific contact.
  * [4] Method to add the contact person to city list.
  * [5] Method to add the contact person to State list.
- * [6] Method to sort address Book by fname/state/ city/ zip
+ * [6] Method to sort address Book by firstname/state/ city/ zip
  * [7] Method to print the sorted address Book
  * [8] Method to write the data to file
  * [9] Method to read the data from the file and display in console.
+ * [10] Method to write the data to a CSV file
+ * [11] Method to read data from a CSV file
  * 
  * @author Tom
  *
@@ -47,6 +59,10 @@ public class AddressBookServices {
 	 */
 	public String getAddressBookName() {
 		return addressBookName;
+	}
+	
+	public enum IOService {
+		CONSOLE_IO, FILE_IO
 	}
 
 	/**
@@ -77,7 +93,7 @@ public class AddressBookServices {
 
 			System.out.println("\nChoose the operation you want to perform");
 			System.out.println(
-					"1.Add Contact to Address Book\n2.Edit Existing contact\n3.Display contact book\n4.Delete Contact\n5.Display Sorted Address Book \n6.Write To File\n7.Read From File\n8.Exit Address book System");
+					"1.Add Contact to Address Book\n2.Edit Existing contact\n3.Display contact book\n4.Delete Contact\n5.Display Sorted Address Book \n6.Write To File\n7.Read From File \n8.Write Data To CSV File \n9.Read Data From CSV File \n10.Exit Address book System");
 
 			switch (scannerObject.nextInt()) {
 			case 1:
@@ -98,16 +114,29 @@ public class AddressBookServices {
 				int sortingChoice = scannerObject.nextInt();
 				sortAddressBook(sortingChoice);
 				break;
-			case 6:
-				writeToAddressBookFile();
-				System.out.println("Written To file");
+			case 6: 
+				writeToAddressBookFile(IOService.FILE_IO);
 				break;
 			case 7:
-				readDataFromFile();
+				readDataFromFile(IOService.FILE_IO);
 				break;
 			case 8:
+				try {
+                    writeDataToCSV();
+                }catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
+                    e.printStackTrace();
+                }
+				break;
+			case 9:
+				try {
+                    readDataFromCSV();
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+			case 10:
 				moreChanges = false;
-				System.out.println("Exiting Address Book: " + this.getAddressBookName() + " !");
+				System.out.println("Exiting Address Book: "+this.getAddressBookName()+" !");
 
 			}
 
@@ -370,23 +399,15 @@ public class AddressBookServices {
 	 * 2. Then we are using the String Buffer to append the data.
 	 * 3. We are converting the contact to string and then appending it.
 	 */
-	public void writeToAddressBookFile() {
-
-		String bookName = this.getAddressBookName();
-		String fileName = bookName + ".txt";
-
-		StringBuffer addressBookBuffer = new StringBuffer();
-		contact.values().stream().forEach(contact -> {
-			String personDataString = contact.toString().concat("\n");
-			addressBookBuffer.append(personDataString);
-		});
-
-		try {
-			Files.write(Paths.get(fileName), addressBookBuffer.toString().getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
+	public void writeToAddressBookFile(IOService ioService) {
+		if(ioService.equals(IOService.CONSOLE_IO))
+			displayContents();
+		
+		else if(ioService.equals(IOService.FILE_IO)) {
+			String bookName = this.getAddressBookName();
+			String fileName = bookName+".txt";
+			new AddressBookFileIO().writeToAddressBookFile(fileName, contact);
 		}
-
 	}
 
 	/**
@@ -396,22 +417,85 @@ public class AddressBookServices {
 	 * 3. We will then add the contact to the list.
 	 * @return
 	 */
-	public List<String> readDataFromFile() {
-
-		List<String> addressBookList = new ArrayList<String>();
+	public List<String> readDataFromFile(IOService fileIo) {
+		
+		List<String> employeePayrollFromFile = new ArrayList<String>();
+		if(fileIo.equals(IOService.FILE_IO)) {
+			System.out.println("Employee Details from payroll-file.txt");
+			String bookName = this.getAddressBookName();
+			String fileName = bookName+".txt";
+			employeePayrollFromFile = new AddressBookFileIO().readDataFromFile(fileName);
+			
+		}
+		return employeePayrollFromFile;
+	}
+	
+	public void printData(IOService fileIo) {
 		String bookName = this.getAddressBookName();
-		String fileName = bookName + ".txt";
-		System.out.println("Reading from : " + fileName + "\n");
-		try {
-			Files.lines(new File(fileName).toPath()).map(line -> line.trim()).forEach(contacts -> {
-				System.out.println(contacts);
-				addressBookList.add(contacts);
-			});
+		String fileName = bookName+".txt";
+		if(fileIo.equals(IOService.FILE_IO)) new AddressBookFileIO().printData(fileName);
+	}
 
+
+	public long countEntries(IOService fileIo) {
+		
+		String bookName = this.getAddressBookName();
+		String fileName = bookName+".txt";
+		if(fileIo.equals(IOService.FILE_IO)) 
+			return new AddressBookFileIO().countEntries(fileName);
+		
+		return 0;
+	}
+	/**
+	 * [10] Method to write the data to a CSV file
+	 * @throws IOException -  to throw any exception if occurred.
+	 */
+	public void writeDataToCSV() throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
+
+		String fileName = "./" + this.getAddressBookName() + ".csv";
+		try (Writer writer = Files.newBufferedWriter(Paths.get(fileName));) {
+
+			StatefulBeanToCsvBuilder<ContactPerson> builder = new StatefulBeanToCsvBuilder<>(writer);
+			StatefulBeanToCsv<ContactPerson> beanWriter = builder.build();
+			ArrayList<ContactPerson> listOfContacts = contact.values().stream()
+					.collect(Collectors.toCollection(ArrayList::new));
+			beanWriter.write(listOfContacts);
+			writer.close();
+			System.out.println("Written To CSV Successfully !");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return addressBookList;
 	}
 
+	/**
+	 * [11] Method to read data from a CSV file
+	 * @throws IOException - we will throw the IO exception
+	 */
+	public <CsvValidationException extends Throwable> void readDataFromCSV() throws IOException, CsvValidationException {
+
+		String fileName = "./" + this.getAddressBookName() + ".csv";
+		try (Reader reader = Files.newBufferedReader(Paths.get(fileName));
+				CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();) {
+
+			String[] nextRecord;
+			try {
+				while ((nextRecord = csvReader.readNext()) != null) {
+					System.out.println("First Name = " + nextRecord[2]);
+					System.out.println("Last Name = " + nextRecord[3]);
+					System.out.println("City = " + nextRecord[0]);
+					System.out.println("State = " + nextRecord[5]);
+					System.out.println("Email = " + nextRecord[1]);
+					System.out.println("Phone Number = " + nextRecord[4]);
+					System.out.println("Zip Code = " + nextRecord[6]);
+					System.out.println("\n");
+				}
+			} catch (com.opencsv.exceptions.CsvValidationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 }
