@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import com.addressBook.entity.ContactPerson;
+import com.jdbc.Statements;
 
 /**
  * This is the main class and we are calling the main method there. We are
@@ -19,6 +20,8 @@ public class AddressBookMain {
 
 		System.out.println("---------- Welcome To Address Book Pr1ogram!! ----------");
 		MultipleAddressBook addressBookDirectory = new MultipleAddressBook();
+		Statements st = new Statements();
+		st.readAddressBook();
 		addressBookDirectory.addressBookMain();
 	}
 

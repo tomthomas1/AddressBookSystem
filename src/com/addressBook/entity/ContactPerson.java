@@ -16,6 +16,27 @@ public class ContactPerson {
 	private long zip;
 	private long phoneNumber;
 	private String email;
+	
+	public ContactPerson() {
+	}
+
+
+	public ContactPerson(String firstName, String lastName, String address, String city, String state, long zip,
+			long phoneNumber, String email) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.city = city;
+		this.state = state;
+		this.zip = zip;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
+	}
+
+
+
+
 
 	/**
 	 * Getters and setters
